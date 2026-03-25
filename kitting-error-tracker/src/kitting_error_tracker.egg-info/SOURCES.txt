@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+src/kitting_cv/__init__.py
+src/kitting_cv/pipeline/__init__.py
+src/kitting_cv/pipeline/run_pipeline.py
+src/kitting_cv/segmentation/__init__.py
+src/kitting_cv/segmentation/bin_segmenter.py
+src/kitting_cv/tracking/__init__.py
+src/kitting_cv/tracking/mediapipe_tracker.py
+src/kitting_error_tracker.egg-info/PKG-INFO
+src/kitting_error_tracker.egg-info/SOURCES.txt
+src/kitting_error_tracker.egg-info/dependency_links.txt
+src/kitting_error_tracker.egg-info/requires.txt
+src/kitting_error_tracker.egg-info/top_level.txt
