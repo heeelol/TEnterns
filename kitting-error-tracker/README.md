@@ -27,6 +27,7 @@ kitting-error-tracker/
 ├─ environment.yml
 ├─ scripts/
 │  └─ run_local.py
+│  └─ setup_jetson_venv.sh
 ├─ src/
 │  └─ kitting_cv/
 │     ├─ tracking/
@@ -39,7 +40,9 @@ kitting-error-tracker/
 └─ pyproject.toml
 ```
 
-## Setup (Windows + Conda)
+## First-Time Setup (Windows + Conda)
+
+Run these once:
 
 ### 1) Open terminal in project root
 
@@ -47,28 +50,40 @@ kitting-error-tracker/
 cd C:\Users\chenx\Documents\TEnterns\kitting-error-tracker
 ```
 
-### 2) Create environment (first time only)
+### 2) Create Conda environment
 
 ```powershell
 conda env create -f environment.yml
 ```
 
-### 3) Activate environment
+### 3) Activate Conda environment
 
 ```powershell
 conda activate kitting-cv
 ```
 
-### 4) Verify interpreter + packages
+### 4) Install this project package (required)
 
 ```powershell
-python --version
-python -c "import cv2, mediapipe; print('OpenCV + MediaPipe OK')"
+python -m pip install -e .
 ```
 
-## Run the Camera Pipeline
+### 5) Verify interpreter + packages
 
 ```powershell
+python -c "import sys; print(sys.executable)"
+python -c "import cv2, mediapipe, kitting_cv; print('Environment OK')"
+```
+
+If you see `(.venv)` in your prompt, run `deactivate` so only `(kitting-cv)` is active.
+
+## Run After Setup (Daily Use)
+
+Each time you start working:
+
+```powershell
+cd C:\Users\chenx\Documents\TEnterns\kitting-error-tracker
+conda activate kitting-cv
 python scripts/run_local.py
 ```
 
@@ -125,13 +140,64 @@ python -c "from kitting_cv.pipeline import run_camera_pipeline; run_camera_pipel
 
 Close other apps that may lock the camera (Teams/Zoom/browser).
 
-## Daily Use
+## Jetson (ICAM-520 / NVIDIA Jetson) Quick Setup
 
-```powershell
-cd C:\Users\chenx\Documents\TEnterns\kitting-error-tracker
-conda activate kitting-cv
+You do **not** need Conda on Jetson. Use a local `venv` unless you specifically want Conda.
+
+### One-command setup (recommended)
+
+```bash
+cd ~/kitting-error-tracker
+bash scripts/setup_jetson_venv.sh
+```
+
+Then run:
+
+```bash
+source .venv/bin/activate
 python scripts/run_local.py
 ```
+
+### Manual setup (same steps as script)
+
+#### 1) Install system packages
+
+```bash
+sudo apt update
+sudo apt install -y python3-pip python3-venv python3-opencv v4l-utils
+```
+
+#### 2) Create and activate a virtual environment
+
+```bash
+cd ~/kitting-error-tracker
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+#### 3) Install project dependencies
+
+```bash
+pip install -r requirements.txt
+pip install -e .
+```
+
+#### 4) Verify imports and camera
+
+```bash
+python -c "import cv2; print(cv2.__version__)"
+python -c "import mediapipe, kitting_cv; print('Jetson environment OK')"
+v4l2-ctl --list-devices
+```
+
+#### 5) Run
+
+```bash
+python scripts/run_local.py
+```
+
+If `mediapipe` is not available on your JetPack/Python combination, keep the same project structure and replace the hand-tracking backend with a Jetson-friendly option.
 
 ## Next Implementation Steps
 
